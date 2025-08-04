@@ -1,0 +1,15 @@
+# filepath: .github/workflows/security-scan.yml
+name: Security Scan Demo
+
+on: [push] # This runs the scan every time you push code
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Microsoft Security DevOps Analysis
+        uses: microsoft/security-devops-action@v1
+        
