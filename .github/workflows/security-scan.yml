@@ -32,11 +32,14 @@ jobs:
       - name: List dependencies (for debugging)
         run: ./gradlew dependencies
 
-      - name: Run Microsoft Security DevOps Analysis
+      - name: Run Microsoft Security DevOps Analysis with Dependency Scanning
         uses: microsoft/security-devops-action@v1
         id: msdo
         env:
           MSDO_LOG_LEVEL: debug
+        with:
+          # Try to explicitly enable dependency scanning
+          tools: 'AdvancedSecurity-Dependency-Scanning'
 
       # Optional: Just show us what was found locally
       # ADD THIS NEW STEP to check what was found
