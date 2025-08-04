@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - 'main' # This ensures the workflow only runs on pushes/merges to the main branch
+      
+permissions:
+  contents: read      # Allows checkout
+  security-events: write # Allows uploading security findings
 
 jobs:
   security-scan:
