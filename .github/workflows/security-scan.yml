@@ -39,9 +39,37 @@ jobs:
           MSDO_LOG_LEVEL: debug
 
       # Optional: Just show us what was found locally
-      - name: Display scan results
+      # ADD THIS NEW STEP to check what was found
+      - name: Check for vulnerabilities in scan results
         run: |
-          echo "Scan completed. Results should appear in Azure Defender for Cloud."
+          echo "=== Checking Microsoft Defender scan results ==="
+          echo "SARIF file location: ${{ steps.msdo.outputs.sarifFile }}"
+          
           if [ -f "${{ steps.msdo.outputs.sarifFile }}" ]; then
-            echo "SARIF file was generated successfully."
+            echo "✅ SARIF file exists"
+            echo ""
+            echo "=== Searching for Log4j vulnerabilities ==="
+            
+            # Check if the SARIF file contains any Log4j-related findings
+            if grep -i "log4j\|CVE-2021-44228\|CVE-2021-45046" "${{ steps.msdo.outputs.sarifFile }}"; then
+              echo ""
+              echo "🚨 LOG4J VULNERABILITY DETECTED! 🚨"
+            else
+              echo ""
+              echo "❌ No Log4j vulnerabilities found in scan results"
+            fi
+            
+            echo ""
+            echo "=== Summary of all findings ==="
+            # Count total number of results
+            RESULT_COUNT=$(jq '.runs[].results | length' "${{ steps.msdo.outputs.sarifFile }}" 2>/dev/null || echo "0")
+            echo "Total security findings: $RESULT_COUNT"
+            
+            # Show a summary of what was found
+            echo ""
+            echo "=== Detailed findings ==="
+            jq -r '.runs[].results[]? | "- " + .ruleId + ": " + .message.text' "${{ steps.msdo.outputs.sarifFile }}" 2>/dev/null || echo "No detailed findings available"
+            
+          else
+            echo "❌ No SARIF file was generated"
           fi
