@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read      # Allows checkout
   security-events: write # Allows uploading security findings
+  id-token: write        # Allows the action to authenticate to Azure
 
 jobs:
   security-scan:
