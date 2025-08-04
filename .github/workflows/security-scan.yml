@@ -18,21 +18,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 1: Set up the Java environment needed to build the project
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      # # Step 1: Set up the Java environment needed to build the project
+      # - name: Set up JDK 17
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     java-version: '17'
+      #     distribution: 'temurin'
+
+      # # Step 2: Build the project with Gradle to resolve all dependencies
+      # # This makes the dependencies visible to the scanner.
+      # - name: Build with Gradle
+      #   run: ./gradlew build --no-daemon
+
+      # # Step 3: Run the Microsoft Defender scanner AFTER the build is complete
+      # - name: Run Microsoft Security DevOps Analysis
+      #   uses: microsoft/security-devops-action@v1
+      #   id: msdo
+
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/dependency-check-action@v5
+        id: owasp
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      # Step 2: Build the project with Gradle to resolve all dependencies
-      # This makes the dependencies visible to the scanner.
-      - name: Build with Gradle
-        run: ./gradlew build --no-daemon
-
-      # Step 3: Run the Microsoft Defender scanner AFTER the build is complete
-      - name: Run Microsoft Security DevOps Analysis
-        uses: microsoft/security-devops-action@v1
-        id: msdo
+          project: 'log4shell-demo'
+          scan: '.'
+          format: 'SARIF'
 
         
