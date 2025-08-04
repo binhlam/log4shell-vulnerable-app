@@ -35,10 +35,4 @@ jobs:
         uses: microsoft/security-devops-action@v1
         id: msdo
 
-      # Step 4: Upload the results
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
-          category: msdo-analysis
         
