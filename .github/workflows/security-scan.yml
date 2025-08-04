@@ -26,4 +26,18 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+
+      # --- OWASP Scanner (Excellent for Gradle) ---
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/dependency-check-action@v5
+        id: owasp
+        with:
+          project: 'log4shell-vulnerable-app'
+          scan: '.' # This tells it to scan the current directory for any supported project type (including Gradle)
+          format: 'SARIF'
+
+      - name: Upload OWASP SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.owasp.outputs.sarif }}
         
