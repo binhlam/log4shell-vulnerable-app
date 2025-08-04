@@ -1,7 +1,10 @@
 # filepath: .github/workflows/security-scan.yml
-name: Security Scan Demo
+name: Security Scan
 
-on: [push] # This runs the scan every time you push code
+on:
+  push:
+    branches:
+      - 'main' # This ensures the workflow only runs on pushes/merges to the main branch
 
 jobs:
   security-scan:
@@ -12,4 +15,10 @@ jobs:
 
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@v1
+        id: msdo
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
         
